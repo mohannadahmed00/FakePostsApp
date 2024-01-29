@@ -2,12 +2,10 @@ package com.giraffe.fakepostsapplication.presentation.postdetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.giraffe.fakepostsapplication.domain.entity.AllPostsEntity
 import com.giraffe.fakepostsapplication.domain.entity.PostDetailsEntity
 import com.giraffe.fakepostsapplication.domain.usecase.GetPostDetailsUseCase
 import com.giraffe.fakepostsapplication.utils.Resource
 import com.giraffe.fakepostsapplication.utils.safeCall
-import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

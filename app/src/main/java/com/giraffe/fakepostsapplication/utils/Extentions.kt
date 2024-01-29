@@ -1,9 +1,7 @@
 package com.giraffe.fakepostsapplication.utils
 
 import android.view.View
-import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.transition.Visibility
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
