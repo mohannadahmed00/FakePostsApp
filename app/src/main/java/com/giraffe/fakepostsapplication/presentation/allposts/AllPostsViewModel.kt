@@ -20,10 +20,12 @@ class AllPostsViewModel @Inject constructor(
     private val _state: MutableStateFlow<Resource<AllPostsEntity>> =
         MutableStateFlow(Resource.Loading)
     val state: StateFlow<Resource<AllPostsEntity>> = _state.asStateFlow()
+
     init {
         getAllPosts()
     }
-    private fun getAllPosts() {
+
+    fun getAllPosts() {
         viewModelScope.launch {
             _state.emit(safeCall { getAllPostsUseCase() })
         }

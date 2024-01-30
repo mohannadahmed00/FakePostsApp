@@ -48,7 +48,7 @@ suspend fun <T> safeCall(apiCall: suspend () -> Flow<T>): Resource<T> {
                 }
 
                 else -> {
-                    resource = Resource.Failure(null, null)
+                    resource = Resource.Failure(0, null)
                 }
             }
         }
@@ -58,21 +58,28 @@ suspend fun <T> safeCall(apiCall: suspend () -> Flow<T>): Resource<T> {
 
 fun Fragment.handleApiErrors(
     failure: Resource.Failure,
+    tryAgainAction: () -> Unit
 ) {
     when (failure.errorCode) {
         Constants.HTTP_CODES.CODE_INTERNAL_SERVER_ERROR.code -> {
-            showSnackbar("something went wrong !!")
+            showSnackBar("something went wrong", tryAgainAction)
         }
+
         Constants.HTTP_CODES.CODE_URL_NOT_FOUND.code -> {
-            showSnackbar("something went wrong !!")
+            showSnackBar("something went wrong", tryAgainAction)
         }
+
+        Constants.HTTP_CODES.CONNECTION_ERROR.code -> {
+            showSnackBar("check your internet connection", tryAgainAction)
+        }
+
         else -> {
             if (failure.errorBody is ResponseBody) {
                 val error = failure.errorBody.string()
                 val baseResponse = Gson().fromJson(error, ErrorResponse::class.java)
-                showSnackbar(baseResponse?.message ?: "null")
+                showSnackBar(baseResponse?.message ?: "something went wrong", tryAgainAction)
             } else if (failure.errorBody is String) {
-                showSnackbar(failure.errorBody)
+                showSnackBar(failure.errorBody, tryAgainAction)
             }
         }
     }
@@ -82,14 +89,16 @@ data class ErrorResponse(
     val message: String,
 )
 
-fun Fragment.showSnackbar(message: String) {
-    Snackbar.make(this.requireView(), message, Snackbar.LENGTH_LONG).show()
+fun Fragment.showSnackBar(message: String, action: () -> Unit) {
+    Snackbar.make(this.requireView(), message, Snackbar.LENGTH_INDEFINITE)
+        .setAction("try again") { action() }
+        .show()
 }
 
-fun View.show(){
+fun View.show() {
     this.visibility = View.VISIBLE
 }
 
-fun View.hide(){
+fun View.hide() {
     this.visibility = View.GONE
 }

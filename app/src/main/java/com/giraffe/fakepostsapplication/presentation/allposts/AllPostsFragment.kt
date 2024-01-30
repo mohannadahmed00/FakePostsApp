@@ -1,7 +1,6 @@
 package com.giraffe.fakepostsapplication.presentation.allposts
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,27 +50,22 @@ class AllPostsFragment : Fragment() {
             mViewModel.state.collect {
                 when (it) {
                     is Resource.Failure -> {
-                        Log.e(TAG, "observeGetAllPosts: ${it.errorCode} ${it.errorBody}")
                         binding.loadingBar.hide()
-                        handleApiErrors(it)
+                        handleApiErrors(it) {
+                            mViewModel.getAllPosts()
+                        }
                     }
 
                     Resource.Loading -> {
-                        Log.i(TAG, "observeGetAllPosts: ")
                         binding.loadingBar.show()
                     }
 
                     is Resource.Success -> {
-                        Log.d(TAG, "observeGetAllPosts: ${it.value}")
                         binding.loadingBar.hide()
                         allPostsAdapter.submitList(it.value.posts)
                     }
                 }
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "AllPostsFragment"
     }
 }

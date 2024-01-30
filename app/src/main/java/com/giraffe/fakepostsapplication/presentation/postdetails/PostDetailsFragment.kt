@@ -1,7 +1,6 @@
 package com.giraffe.fakepostsapplication.presentation.postdetails
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,18 +45,17 @@ class PostDetailsFragment : Fragment() {
             mViewModel.state.collect {
                 when (it) {
                     is Resource.Failure -> {
-                        Log.e(TAG, "observeGetPostDetails: ${it.errorCode} ${it.errorBody}")
                         binding.loadingBar.hide()
-                        handleApiErrors(it)
+                        handleApiErrors(it) {
+                            mViewModel.getPostDetails(args.postId)
+                        }
                     }
 
                     Resource.Loading -> {
-                        Log.i(TAG, "observeGetPostDetails: ")
                         binding.loadingBar.show()
                     }
 
                     is Resource.Success -> {
-                        Log.d(TAG, "observeGetPostDetails: ${it.value}")
                         binding.loadingBar.hide()
                         binding.tvTitle.text = it.value.title
                         binding.tvBody.text = it.value.body
@@ -65,9 +63,5 @@ class PostDetailsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "PostDetailsFragment"
     }
 }
